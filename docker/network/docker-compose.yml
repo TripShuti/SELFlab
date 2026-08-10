@@ -42,4 +42,4 @@ services:
       - TS_USERSPACE=false
       - TS_ACCEPT_DNS=true
       - TS_EXTRA_ARGS=--advertise-exit-node --advertise-routes=192.168.1.0/24 --accept-dns=true
-    restart: always
+    restart: unless-stopped
