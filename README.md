@@ -48,7 +48,7 @@ docker compose up -d
 Керую всім цим через [Dockhand](https://github.com/Finsys/dockhand) — там усе тягнеться
 прямо з цього репо, без ручного `git pull` на сервері.
 
-1. **Git Integration** → додати цей репозиторій
+1. **Git Integration** → зробити форк, прописати всі свої шляхи, та додати свій репозиторій у Dockhand
 2. Створити окремий **git-стек на кожну підпапку** — кожен стек вказує на свій `compose path`:
    - `docker/media`
    - `docker/immich`
