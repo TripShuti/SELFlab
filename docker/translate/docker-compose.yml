@@ -6,7 +6,7 @@ services:
       - "3010:8080"
     volumes:
       - /home/trip/stirling-pdf/tessdata:/usr/share/tessdata
-    restart: always
+    restart: unless-stopped
 
   libretranslate:
     image: libretranslate/libretranslate:latest
@@ -15,7 +15,7 @@ services:
       - "3020:5000"
     volumes:
       - libre-trans_lt-local:/home/libretranslate/.local
-    restart: always
+    restart: unless-stopped
 
 volumes:
   libre-trans_lt-local:
