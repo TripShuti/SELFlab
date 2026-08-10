@@ -44,4 +44,4 @@ services:
     volumes:
       - /home/trip/navidrome/data:/data
       - /home/trip/navidrome/navidrome_music:/music:ro
-    restart: always
+    restart: unless-stopped
