@@ -95,6 +95,16 @@ Caddy з власним внутрішнім CA. Усі сервіси з веб
 - qBittorrent: у Web UI → Налаштування → Веб-інтерфейс вимкни
   **Host header validation**, інакше віддаватиме помилку через проксі
 - Прямий доступ по старих адресах (`http://jellyfin.home:8096`) лишається
+- Якщо на хості увімкнений ufw з `default deny incoming` — він ріже і трафік
+  з docker-моста на опубліковані порти, і Caddy віддає `502 dial i/o timeout`
+  (docker-proxy зовні живий, але пакети з підмережі контейнерів не доходять).
+  Один раз дозволити підмережу адмін-мережі:
+
+  ```bash
+  NET=$(docker inspect caddy -f '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{end}}')
+  SUBNET=$(docker network inspect "$NET" -f '{{(index .IPAM.Config 0).Subnet}}')
+  sudo ufw allow from "$SUBNET" to any port 8192,3001,51515,8443 proto tcp
+  ```
 
 ## Запуск стеку
 
