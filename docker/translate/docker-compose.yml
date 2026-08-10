@@ -6,6 +6,7 @@ services:
       - "${STIRLING_PORT:-3010}:8080"
     volumes:
       - ${STIRLING_TESSDATA:-/home/trip/stirling-pdf/tessdata}:/usr/share/tessdata
+      - ${STIRLING_CONFIG:-/home/trip/stirling-pdf/configs}:/configs
     environment:
       # Мови для OCR — встановлюються в образ при старті.
       # Не потрібні, якщо кладеш .traineddata напряму в STIRLING_TESSDATA.
