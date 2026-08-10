@@ -15,6 +15,9 @@
 | Tailscale | VPN / exit node для доступу ззовні | — |
 | Stirling PDF | робота з PDF (мердж, OCR, конвертація) | 3010 |
 | LibreTranslate | self-hosted переклад тексту | 3020 |
+| Vaultwarden | менеджер паролів (Bitwarden-сумісний) | 8192 |
+| Uptime Kuma | моніторинг доступності сервісів | 3001 |
+| Kopia | бекап конфігів у Google Drive | 51515 |
 
 Всі порти, шляхи і основні налаштування задаються через env — порт у таблиці
 просто дефолт, його можна змінити в `.env`.
@@ -27,7 +30,9 @@ homelab/
 │   ├── media/          # jellyfin, qbittorrent, navidrome
 │   ├── immich/          # фото-бекап
 │   ├── network/         # pihole, tailscale
-│   └── translate/       # stirling-pdf, libretranslate
+│   ├── translate/       # stirling-pdf, libretranslate
+│   └── admin/           # vaultwarden, uptime-kuma, kopia (бекапи)
+└── .gitignore
 └── .gitignore
 ```
 
@@ -48,6 +53,24 @@ homelab/
 
 Усі змінні мають дефолти через `${VAR:-...}` прямо в compose — навіть без
 `.env` стек піднімається, просто з моїми значеннями.
+
+## Бекап конфігів
+
+`docker/admin` бекапить конфіги всіх стеків (jellyfin, qbittorrent, navidrome,
+pihole, tailscale, stirling, vaultwarden, uptime-kuma) у Google Drive через
+Kopia + rclone. Тільки налаштування — фото, музика і торенти не входять.
+
+Разова підготовка на сервері:
+
+1. `rclone config --config /home/trip/kopia/rclone.conf` → remote `gdrive`
+   (OAuth через браузер, client_id лишити порожнім — внутрішній ключ rclone
+   для конфігів цілком тягне)
+2. Перевірка: `rclone lsd --config /home/trip/kopia/rclone.conf gdrive:`
+3. У веб-UI Kopia (http://host:51515): **Repository → Rclone** → remote path
+   `gdrive:kopia` (папку створить сама), пароль — `KOPIA_PASSWORD` з `.env`
+4. Створити снапшот-сети для потрібних `/sources/*` (jellyfin, qbittorrent,
+   navidrome, pihole, dnsmasq, tailscale, stirling, vaultwarden, uptime-kuma) →
+   політика «щодня 02:00, 30 денних + 12 місячних» → перший бекап вручну
 
 ## Запуск стеку
 
@@ -76,6 +99,7 @@ docker compose up -d
    - `docker/immich`
    - `docker/network`
    - `docker/translate`
+   - `docker/admin`
 
    Dockhand відстежує кожну підпапку окремо і синкає тільки той стек,
    у чиїй директорії щось змінилось — інші стеки при цьому не чіпає.

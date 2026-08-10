@@ -1,0 +1,64 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:latest
+    container_name: ${VAULTWARDEN_CONTAINER_NAME:-vaultwarden}
+    ports:
+      - "${VAULTWARDEN_PORT:-8192}:80"
+    volumes:
+      - ${VAULTWARDEN_DATA:-/home/trip/vaultwarden}:/data
+    environment:
+      - TZ=${TZ:-Europe/Kyiv}
+      # Домен, з якого заходиш (потрібен мобільному додатку Bitwarden)
+      - DOMAIN=${VAULTWARDEN_DOMAIN:-http://vault.home:8192}
+      # Перший запуск: true → створити акаунт у UI → перемкнути на false
+      - SIGNUPS_ALLOWED=${SIGNUPS_ALLOWED:-false}
+      # Адмін-панель (опційно): `openssl rand -base64 48`
+      # - ADMIN_TOKEN=${ADMIN_TOKEN}
+    restart: unless-stopped
+
+  uptime-kuma:
+    image: louislam/uptime-kuma:1
+    container_name: ${UPTIME_KUMA_CONTAINER_NAME:-uptime-kuma}
+    ports:
+      - "${UPTIME_KUMA_PORT:-3001}:3001"
+    volumes:
+      - ${UPTIME_KUMA_DATA:-/home/trip/uptime-kuma}:/app/data
+    restart: unless-stopped
+
+  kopia:
+    image: kopia/kopia:latest
+    container_name: ${KOPIA_CONTAINER_NAME:-kopia}
+    # Без hostname контейнер отримує випадкове ім'я, яке записується в конфіг
+    hostname: ${KOPIA_HOSTNAME:-kopia}
+    ports:
+      - "${KOPIA_PORT:-51515}:51515"
+    command:
+      - server
+      - start
+      - --disable-csrf-token-checks
+      - --insecure
+      - --address=0.0.0.0:51515
+      - --server-username=${KOPIA_SERVER_USERNAME:-kopia}
+      - --server-password=${KOPIA_SERVER_PASSWORD:-changeme}
+    environment:
+      - TZ=${TZ:-Europe/Kyiv}
+      # Пароль шифрування репозиторію — вводиться при створенні репо в UI,
+      # без нього бекапи неможливо відновити
+      - KOPIA_PASSWORD=${KOPIA_PASSWORD}
+    volumes:
+      - ${KOPIA_CONFIG:-/home/trip/kopia/config}:/app/config
+      - ${KOPIA_CACHE:-/home/trip/kopia/cache}:/app/cache
+      - ${KOPIA_LOGS:-/home/trip/kopia/logs}:/app/logs
+      # rclone-конфіг для бекапу в Google Drive (remote gdrive)
+      - ${KOPIA_RCLONE_CONFIG:-/home/trip/kopia/rclone.conf}:/app/rclone/rclone.conf:ro
+      # Джерела для бекапу (read-only)
+      - ${JELLYFIN_CONFIG:-/home/trip/jellyfin/config}:/sources/jellyfin:ro
+      - ${QBITTORRENT_CONFIG:-/mnt/ssd/qbittorrent/config}:/sources/qbittorrent:ro
+      - ${NAVIDROME_DATA:-/home/trip/navidrome/data}:/sources/navidrome:ro
+      - ${PIHOLE_ETC:-/home/trip/pihole_unbound/etc-pihole}:/sources/pihole:ro
+      - ${PIHOLE_DNSMASQ:-/home/trip/pihole_unbound/etc-dnsmasq.d}:/sources/dnsmasq:ro
+      - ${TAILSCALE_STATE:-/home/trip/tailscale/state}:/sources/tailscale:ro
+      - ${STIRLING_CONFIG:-/home/trip/stirling-pdf/configs}:/sources/stirling:ro
+      - ${VAULTWARDEN_DATA:-/home/trip/vaultwarden}:/sources/vaultwarden:ro
+      - ${UPTIME_KUMA_DATA:-/home/trip/uptime-kuma}:/sources/uptime-kuma:ro
+    restart: unless-stopped
