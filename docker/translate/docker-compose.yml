@@ -1,18 +1,26 @@
 services:
   stirling-pdf:
     image: frooodle/s-pdf:latest
-    container_name: stirling-pdf
+    container_name: ${STIRLING_CONTAINER_NAME:-stirling-pdf}
     ports:
-      - "3010:8080"
+      - "${STIRLING_PORT:-3010}:8080"
     volumes:
-      - /home/trip/stirling-pdf/tessdata:/usr/share/tessdata
+      - ${STIRLING_TESSDATA:-/home/trip/stirling-pdf/tessdata}:/usr/share/tessdata
+    environment:
+      # Мови для OCR — встановлюються в образ при старті.
+      # Не потрібні, якщо кладеш .traineddata напряму в STIRLING_TESSDATA.
+      # TESSERACT_LANGS: eng,ukr
+      # LANGS: en_GB,uk_UA
     restart: unless-stopped
 
   libretranslate:
     image: libretranslate/libretranslate:latest
-    container_name: libretranslate
+    container_name: ${LIBRETRANSLATE_CONTAINER_NAME:-libretranslate}
     ports:
-      - "3020:5000"
+      - "${LIBRETRANSLATE_PORT:-3020}:5000"
+    environment:
+      # Моделі перекладу, які завантажуються при першому старті (кожна ~сотні МБ)
+      - LT_LOAD_ONLY=${LT_LOAD_ONLY:-uk,en}
     volumes:
       - libre-trans_lt-local:/home/libretranslate/.local
     restart: unless-stopped
