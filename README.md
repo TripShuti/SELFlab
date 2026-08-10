@@ -18,6 +18,7 @@
 | Vaultwarden | менеджер паролів (Bitwarden-сумісний) | 8192 |
 | Uptime Kuma | моніторинг доступності сервісів | 3001 |
 | Kopia | бекап конфігів у Google Drive | 51515 |
+| Caddy | HTTPS-проксі з внутрішнім CA (`https://vault.home:8443`) | 8443 |
 
 Всі порти, шляхи і основні налаштування задаються через env — порт у таблиці
 просто дефолт, його можна змінити в `.env`.
@@ -31,7 +32,7 @@ homelab/
 │   ├── immich/          # фото-бекап
 │   ├── network/         # pihole, tailscale
 │   ├── translate/       # stirling-pdf, libretranslate
-│   └── admin/           # vaultwarden, uptime-kuma, kopia (бекапи)
+│   └── admin/           # vaultwarden, uptime-kuma, kopia, caddy
 └── .gitignore
 └── .gitignore
 ```
@@ -71,6 +72,22 @@ Kopia + rclone. Тільки налаштування — фото, музика
 4. Створити снапшот-сети для потрібних `/sources/*` (jellyfin, qbittorrent,
    navidrome, pihole, dnsmasq, tailscale, stirling, vaultwarden, uptime-kuma) →
    політика «щодня 02:00, 30 денних + 12 місячних» → перший бекап вручну
+
+## Доступ до Vaultwarden
+
+Vaultwarden (як і всі Bitwarden-клієнти) вимагає HTTPS, тому перед ним стоїть
+Caddy з власним внутрішнім CA — адреса `https://vault.home:8443`.
+
+- **Вдома** — просто відкриваєш адресу, tailscale не потрібен. Один раз
+  встанови CA-сертифікат Caddy на пристрій:
+  `docker compose exec caddy cat /data/caddy/pki/authorities/local/root.crt`
+  → Android: Налаштування → Безпека → Встановити сертифікат → CA
+- **Поза домом** — увімкни tailscale на телефоні. У Tailscale admin console
+  (DNS → Nameservers → Custom → tailnet IP сервера + Override local DNS)
+  налаштований pihole як DNS, тож `vault.home` резолвиться і трафік іде через
+  маршрут `192.168.1.0/24`
+- У Pi-hole має бути Local DNS record: `vault.home` → LAN IP сервера
+- Запис `VAULTWARDEN_DOMAIN` у `.env` має збігатися з адресою вище
 
 ## Запуск стеку
 

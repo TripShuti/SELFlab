@@ -25,6 +25,16 @@ services:
       - ${UPTIME_KUMA_DATA:-/home/trip/uptime-kuma}:/app/data
     restart: unless-stopped
 
+  caddy:
+    image: caddy:2
+    container_name: ${CADDY_CONTAINER_NAME:-caddy}
+    ports:
+      - "${CADDY_PORT:-8443}:443"
+    volumes:
+      - ${CADDY_CONFIG:-/home/trip/caddy/Caddyfile}:/etc/caddy/Caddyfile:ro
+      - ${CADDY_DATA:-/home/trip/caddy/data}:/data
+    restart: unless-stopped
+
   kopia:
     image: kopia/kopia:latest
     container_name: ${KOPIA_CONTAINER_NAME:-kopia}
