@@ -1,4 +1,44 @@
 vault.home {
     tls internal
-    reverse_proxy vaultwarden:80
+    reverse_proxy host.docker.internal:8192
+}
+
+jellyfin.home {
+    tls internal
+    reverse_proxy host.docker.internal:8096
+}
+
+qbittorrent.home {
+    tls internal
+    reverse_proxy host.docker.internal:8080
+}
+
+navidrome.home {
+    tls internal
+    reverse_proxy host.docker.internal:4533
+}
+
+immich.home {
+    tls internal
+    reverse_proxy host.docker.internal:2283
+}
+
+stirling.home {
+    tls internal
+    reverse_proxy host.docker.internal:3010
+}
+
+libretranslate.home {
+    tls internal
+    reverse_proxy host.docker.internal:3020
+}
+
+kuma.home {
+    tls internal
+    reverse_proxy host.docker.internal:3001
+}
+
+kopia.home {
+    tls internal
+    reverse_proxy host.docker.internal:51515
 }

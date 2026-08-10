@@ -30,6 +30,9 @@ services:
     container_name: ${CADDY_CONTAINER_NAME:-caddy}
     ports:
       - "${CADDY_PORT:-8443}:443"
+    extra_hosts:
+      # Доступ до опублікованих портів інших стеків на хості
+      - "host.docker.internal:host-gateway"
     volumes:
       - ${CADDY_CONFIG:-/home/trip/caddy/Caddyfile}:/etc/caddy/Caddyfile:ro
       - ${CADDY_DATA:-/home/trip/caddy/data}:/data

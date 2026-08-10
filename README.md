@@ -18,7 +18,7 @@
 | Vaultwarden | менеджер паролів (Bitwarden-сумісний) | 8192 |
 | Uptime Kuma | моніторинг доступності сервісів | 3001 |
 | Kopia | бекап конфігів у Google Drive | 51515 |
-| Caddy | HTTPS-проксі з внутрішнім CA (`https://vault.home:8443`) | 8443 |
+| Caddy | HTTPS-проксі з внутрішнім CA (`https://<сервіс>.home:8443`) | 8443 |
 
 Всі порти, шляхи і основні налаштування задаються через env — порт у таблиці
 просто дефолт, його можна змінити в `.env`.
@@ -73,10 +73,15 @@ Kopia + rclone. Тільки налаштування — фото, музика
    navidrome, pihole, dnsmasq, tailscale, stirling, vaultwarden, uptime-kuma) →
    політика «щодня 02:00, 30 денних + 12 місячних» → перший бекап вручну
 
-## Доступ до Vaultwarden
+## Доступ до сервісів (HTTPS через Caddy)
 
-Vaultwarden (як і всі Bitwarden-клієнти) вимагає HTTPS, тому перед ним стоїть
-Caddy з власним внутрішнім CA — адреса `https://vault.home:8443`.
+Bitwarden-клієнти та веб-сховище вимагають HTTPS, тому перед сервісами стоїть
+Caddy з власним внутрішнім CA. Усі сервіси з веб-сторінкою доступні як
+`https://<ім'я>.home:8443`:
+
+`vault.home` (8192), `jellyfin.home` (8096), `qbittorrent.home` (8080),
+`navidrome.home` (4533), `immich.home` (2283), `stirling.home` (3010),
+`libretranslate.home` (3020), `kuma.home` (3001), `kopia.home` (51515).
 
 - **Вдома** — просто відкриваєш адресу, tailscale не потрібен. Один раз
   встанови CA-сертифікат Caddy на пристрій:
@@ -84,10 +89,12 @@ Caddy з власним внутрішнім CA — адреса `https://vault.
   → Android: Налаштування → Безпека → Встановити сертифікат → CA
 - **Поза домом** — увімкни tailscale на телефоні. У Tailscale admin console
   (DNS → Nameservers → Custom → tailnet IP сервера + Override local DNS)
-  налаштований pihole як DNS, тож `vault.home` резолвиться і трафік іде через
+  налаштований pihole як DNS, тож `.home` імена резолвляться і трафік іде через
   маршрут `192.168.1.0/24`
-- У Pi-hole має бути Local DNS record: `vault.home` → LAN IP сервера
-- Запис `VAULTWARDEN_DOMAIN` у `.env` має збігатися з адресою вище
+- У Pi-hole має бути Local DNS record для кожного імені → LAN IP сервера
+- qBittorrent: у Web UI → Налаштування → Веб-інтерфейс вимкни
+  **Host header validation**, інакше віддаватиме помилку через проксі
+- Прямий доступ по старих адресах (`http://jellyfin.home:8096`) лишається
 
 ## Запуск стеку
 
