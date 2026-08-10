@@ -1,0 +1,22 @@
+services:
+  stirling-pdf:
+    image: frooodle/s-pdf:latest
+    container_name: stirling-pdf
+    ports:
+      - "3010:8080"
+    volumes:
+      - /home/trip/stirling-pdf/tessdata:/usr/share/tessdata
+    restart: always
+
+  libretranslate:
+    image: libretranslate/libretranslate:latest
+    container_name: libretranslate
+    ports:
+      - "3020:5000"
+    volumes:
+      - libre-trans_lt-local:/home/libretranslate/.local
+    restart: always
+
+volumes:
+  libre-trans_lt-local:
+    external: true

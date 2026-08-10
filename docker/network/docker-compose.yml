@@ -1,0 +1,45 @@
+services:
+  pihole:
+    container_name: pihole-unbound
+    image: mpgirro/pihole-unbound:latest
+    hostname: home.server
+    domainname: pi-hole
+    ports:
+      - 443:443/tcp
+      - 53:53/tcp
+      - 53:53/udp
+      - 80:80/tcp
+    environment:
+      - TZ=Europe/Kyiv
+      - PIHOLE_INTERFACE=any
+      - DNSMASQ_LISTENING=all
+      - DNSMASQ_USER=root
+      - FTLCONF_webserver_api_password=${PIHOLE_WEBPASSWORD}
+      - FTLCONF_dns_upstreams=127.0.0.1#5335
+      - FTLCONF_dns_dnssec=true
+      - FTLCONF_dns_listeningMode=all
+    volumes:
+      - /home/trip/pihole_unbound/etc-pihole:/etc/pihole:rw
+      - /home/trip/pihole_unbound/etc-dnsmasq.d:/etc/dnsmasq.d:rw
+    restart: unless-stopped
+
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: tailscale
+    hostname: homeserver-vpn
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    volumes:
+      - /home/trip/tailscale/state:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+      - TS_ACCEPT_DNS=true
+      - TS_EXTRA_ARGS=--advertise-exit-node --advertise-routes=192.168.1.0/24 --accept-dns=true
+    restart: always

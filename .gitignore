@@ -1,0 +1,11 @@
+# Секрети — ніколи не комітити
+.env
+*.env
+!.env.example
+
+# Дані контейнерів, якщо колись покладеш їх поруч з compose-файлами
+**/data/
+**/config/
+**/postgres/
+**/etc-pihole/
+**/etc-dnsmasq.d/
