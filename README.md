@@ -103,7 +103,8 @@ Caddy з власним внутрішнім CA. Усі сервіси з веб
   ```bash
   NET=$(docker inspect caddy -f '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{end}}')
   SUBNET=$(docker network inspect "$NET" -f '{{(index .IPAM.Config 0).Subnet}}')
-  sudo ufw allow from "$SUBNET" to any port 8192,3001,51515,8443 proto tcp
+  # порти всіх сервісів, які Caddy проксіює (див. Caddyfile)
+  sudo ufw allow from "$SUBNET" to any port 8192,8096,8080,4533,2283,3010,3020,3001,51515 proto tcp
   ```
 
 ## Запуск стеку
