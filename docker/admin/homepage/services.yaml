@@ -5,6 +5,8 @@
         icon: jellyfin
         widget:
           type: jellyfin
+          url: http://host.docker.internal:8096
+          key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
     - Navidrome:
         href: https://navidrome.home:8443
         description: Музика
@@ -17,6 +19,9 @@
         icon: qbittorrent
         widget:
           type: qbittorrent
+          url: http://host.docker.internal:8080
+          username: "{{HOMEPAGE_VAR_QBITTORRENT_USERNAME}}"
+          password: "{{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}"
 
 - Network:
     - Pi-hole:
@@ -25,12 +30,17 @@
         icon: pi-hole
         widget:
           type: pihole
+          url: http://host.docker.internal:80
+          token: "{{HOMEPAGE_VAR_PIHOLE_TOKEN}}"
     - Tailscale:
         href: https://login.tailscale.com/admin/machines
         description: VPN-мережа
         icon: tailscale
         widget:
           type: tailscale
+          url: https://api.tailscale.com
+          key: "{{HOMEPAGE_VAR_TAILSCALE_KEY}}"
+          tailnet: "{{HOMEPAGE_VAR_TAILSCALE_TAILNET}}"
 
 - Admin:
     - Vaultwarden:
@@ -43,6 +53,8 @@
         icon: immich
         widget:
           type: immich
+          url: http://host.docker.internal:2283
+          key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
     - Stirling PDF:
         href: https://stirling.home:8443
         description: Робота з PDF
