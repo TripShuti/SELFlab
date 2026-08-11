@@ -1,0 +1,45 @@
+- Bookmarks:
+    - GitHub:
+        - icon: https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/git.svg
+          description: ""
+          href: https://github.com/
+    - Gemini:
+        - icon: https://cdn.jsdelivr.net/npm/@lobehub/icons-static-svg@latest/icons/gemini-color.svg
+          description: ""
+          href: https://gemini.google.com/
+    - ChatGPT:
+        - icon: chatgpt
+          description: ""
+          href: https://chatgpt.com/
+    - Claude:
+        - icon: https://cdn.jsdelivr.net/gh/selfhst/icons/svg/claude.svg
+          description: ""
+          href: https://claude.ai/
+    - Reddit:
+        - icon: reddit
+          description: ""
+          href: https://reddit.com/
+    - Twitter:
+        - icon: twitter
+          description: ""
+          href: https://x.com/
+    - YouTube:
+        - icon: youtube
+          description: ""
+          href: https://youtube.com/
+    - Gmail:
+        - icon: gmail
+          description: ""
+          href: https://mail.google.com/
+    - Notion:
+        - icon: notion
+          description: ""
+          href: https://app.notion.com/
+    - psnSELF:
+        - icon: playstation
+          description: ""
+          href: http://psn.home:8420/
+    - SELFwishes:
+        - icon: https://www.svgrepo.com/show/504386/genshin-impact.svg
+          description: ""
+          href: http://self.wishes.home:6767/dashboard

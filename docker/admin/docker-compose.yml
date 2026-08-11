@@ -104,4 +104,5 @@ services:
       - ${STIRLING_CONFIG:-/home/trip/stirling-pdf/configs}:/sources/stirling:ro
       - ${VAULTWARDEN_DATA:-/home/trip/vaultwarden}:/sources/vaultwarden:ro
       - ${UPTIME_KUMA_DATA:-/home/trip/uptime-kuma}:/sources/uptime-kuma:ro
+      - ${HOMEPAGE_CONFIG:-/home/trip/homepage}:/sources/homepage:ro
     restart: unless-stopped

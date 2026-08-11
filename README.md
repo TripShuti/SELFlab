@@ -59,8 +59,8 @@ homelab/
 ## Бекап конфігів
 
 `docker/admin` бекапить конфіги всіх стеків (jellyfin, qbittorrent, navidrome,
-pihole, tailscale, stirling, vaultwarden, uptime-kuma) у Google Drive через
-Kopia + rclone. Тільки налаштування — фото, музика і торенти не входять.
+pihole, tailscale, stirling, vaultwarden, uptime-kuma, homepage) у Google Drive
+через Kopia + rclone. Тільки налаштування — фото, музика і торенти не входять.
 
 Разова підготовка на сервері:
 
@@ -99,6 +99,7 @@ docker exec -d kopia bash -c \
   'kopia --config-file=/app/config/repository.config snapshot create --progress \
     /sources/qbittorrent /sources/navidrome /sources/pihole /sources/dnsmasq \
     /sources/tailscale /sources/stirling /sources/uptime-kuma /sources/jellyfin \
+    /sources/homepage \
     > /tmp/backup.log 2>&1'
 # прогрес:
 docker exec kopia tail -f /tmp/backup.log
@@ -174,7 +175,8 @@ Caddy з власним внутрішнім CA. Усі сервіси з веб
 `https://homepage.home:8443` — головний екран із усіма сервісами.
 
 - Конфіг: `docker/admin/homepage/` (`settings.yaml`, `services.yaml`,
-  `widgets.yaml`) → копіюється на сервер у `HOMEPAGE_CONFIG` (`/home/trip/homepage`)
+  `widgets.yaml`, `bookmarks.yaml`, `custom.css`) → копіюється на сервер у
+  `HOMEPAGE_CONFIG` (`/home/trip/homepage`) і бекапиться в Kopia (джерело `/sources/homepage`)
 - Секрети віджетів не в репо: заповнюються в Dockhand (Env) як `HOMEPAGE_VAR_*`
   (jellyfin key, qbittorrent login, pihole token, tailscale key+tailnet+deviceid, immich key)
 - Статус контейнерів — через Uptime Kuma

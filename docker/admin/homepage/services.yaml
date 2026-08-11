@@ -11,8 +11,6 @@
         href: https://navidrome.home:8443
         description: Музика
         icon: navidrome
-
-- Downloads:
     - qBittorrent:
         href: https://qbittorrent.home:8443
         description: Торенти
@@ -22,6 +20,15 @@
           url: http://host.docker.internal:8080
           username: "{{HOMEPAGE_VAR_QBITTORRENT_USERNAME}}"
           password: "{{HOMEPAGE_VAR_QBITTORRENT_PASSWORD}}"
+    - Immich:
+        href: https://immich.home:8443
+        description: Галерея фото
+        icon: immich
+        widget:
+          type: immich
+          url: http://host.docker.internal:2283
+          version: 2
+          key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
 
 - Network:
     - Pi-hole:
@@ -45,23 +52,14 @@
           deviceid: "{{HOMEPAGE_VAR_TAILSCALE_DEVICEID}}"
 
 - Admin:
+    - Dockhand:
+        href: http://dockhand.home:3000/stacks
+        description: Керування контейнерами
+        icon: docker
     - Vaultwarden:
         href: https://vault.home:8443
         description: Менеджер паролів
         icon: bitwarden
-    - Immich:
-        href: https://immich.home:8443
-        description: Галерея фото
-        icon: immich
-        widget:
-          type: immich
-          url: http://host.docker.internal:2283
-          version: 2
-          key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
-    - Stirling PDF:
-        href: https://stirling.home:8443
-        description: Робота з PDF
-        icon: stirling-pdf
     - Uptime Kuma:
         href: https://kuma.home:8443
         description: Моніторинг
@@ -70,3 +68,11 @@
         href: https://kopia.home:8443
         description: Бекапи в Google Drive
         icon: kopia
+    - LibreTranslate:
+        href: https://libretranslate.home:8443
+        description: Переклад тексту
+        icon: libretranslate
+    - Stirling PDF:
+        href: https://stirling.home:8443
+        description: Робота з PDF
+        icon: stirling-pdf
