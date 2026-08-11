@@ -46,7 +46,7 @@ services:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: ${HOMEPAGE_CONTAINER_NAME:-homepage}
     ports:
-      - "${HOMEPAGE_PORT:-3000}:3000"
+      - "${HOMEPAGE_PORT:-3002}:3002"
     extra_hosts:
       # Доступ до API-портів інших стеків на хості (віджети)
       - "host.docker.internal:host-gateway"

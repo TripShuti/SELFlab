@@ -17,7 +17,7 @@
 | LibreTranslate | self-hosted переклад тексту | 3020 |
 | Vaultwarden | менеджер паролів (Bitwarden-сумісний) | 8192 |
 | Uptime Kuma | моніторинг доступності сервісів | 3001 |
-| Homepage | дашборд усіх сервісів | 3000 |
+| Homepage | дашборд усіх сервісів | 3002 |
 | Kopia | бекап конфігів у Google Drive | 51515 |
 | Caddy | HTTPS-проксі з внутрішнім CA (`https://<сервіс>.home:8443`) | 8443 |
 
@@ -132,7 +132,7 @@ Caddy з власним внутрішнім CA. Усі сервіси з веб
 `vault.home` (8192), `jellyfin.home` (8096), `qbittorrent.home` (8080),
 `navidrome.home` (4533), `immich.home` (2283), `stirling.home` (3010),
 `libretranslate.home` (3020), `kuma.home` (3001), `kopia.home` (51515),
-`homepage.home` (3000).
+`homepage.home` (3002).
 
 - **Вдома** — просто відкриваєш адресу, tailscale не потрібен. Один раз
   встанови CA-сертифікат Caddy на пристрій:
@@ -166,7 +166,7 @@ Caddy з власним внутрішнім CA. Усі сервіси з веб
   NET=$(docker inspect caddy -f '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{end}}')
   SUBNET=$(docker network inspect "$NET" -f '{{(index .IPAM.Config 0).Subnet}}')
   # порти всіх сервісів, які Caddy проксіює (див. Caddyfile)
-  sudo ufw allow from "$SUBNET" to any port 8192,8096,8080,4533,2283,3010,3020,3001,3000,51515 proto tcp
+  sudo ufw allow from "$SUBNET" to any port 8192,8096,8080,4533,2283,3010,3020,3001,3002,51515 proto tcp
   ```
 
 ## Дашборд Homepage
