@@ -68,6 +68,19 @@ services:
       - HOMEPAGE_VAR_IMMICH_KEY=${HOMEPAGE_VAR_IMMICH_KEY:-}
     restart: unless-stopped
 
+  glances:
+    image: nicolargo/glances:latest
+    container_name: ${GLANCES_CONTAINER_NAME:-glances}
+    environment:
+      # REST API без веб-UI (живить віджет системного моніторингу в homepage)
+      - GLANCES_OPT=-w --disable-webui
+    volumes:
+      # ОС хоста, а не контейнера; /sys — температура CPU (hwmon)
+      - /etc/os-release:/etc/os-release:ro
+      - /sys:/sys:ro
+    pid: host
+    restart: unless-stopped
+
   kopia:
     image: kopia/kopia:latest
     container_name: ${KOPIA_CONTAINER_NAME:-kopia}

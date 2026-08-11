@@ -20,6 +20,7 @@
 | Vaultwarden | менеджер паролів (Bitwarden-сумісний) | 8192 |
 | Uptime Kuma | моніторинг доступності сервісів | 3001 |
 | Homepage | дашборд усіх сервісів | 3002 |
+| Glances | агент системного моніторингу для дашборду (REST API, без UI) | 61208 (внутрішній) |
 | Kopia | бекап конфігів у Google Drive | 51515 |
 | Caddy | HTTPS-проксі з внутрішнім CA (`https://<сервіс>.home:8443`) | 8443 |
 
@@ -35,7 +36,7 @@ SELFlab/
 │   ├── immich/         # фото-бекап
 │   ├── network/        # pihole, tailscale
 │   ├── translate/      # stirling-pdf, libretranslate
-│   └── admin/          # vaultwarden, uptime-kuma, kopia, caddy
+│   └── admin/          # vaultwarden, uptime-kuma, kopia, caddy, glances
 │       └── homepage/   # конфіг дашборду (yaml + custom.css)
 └── .gitignore
 ```
@@ -184,6 +185,9 @@ Caddy з власним внутрішнім CA. Усі сервіси з веб
 - Секрети віджетів не в репо: заповнюються в Dockhand (Env) як `HOMEPAGE_VAR_*`
   (jellyfin key, qbittorrent login, pihole token, tailscale key+tailnet+deviceid, immich key)
 - Статус контейнерів — через Uptime Kuma
+- Системний моніторинг хоста (CPU, RAM, температура, аптайм, диски) — віджет
+  `glances` у `widgets.yaml`; дані тягне з контейнера `glances`
+  (`GLANCES_OPT=-w --disable-webui` — тільки REST API, без власного веб-UI)
 - Після зміни конфігу: онови сторінку (конфіги читаються гаряче).
   Рестарт/Deploy потрібен тільки після зміни env-змінних у Dockhand
 
