@@ -46,7 +46,8 @@ services:
     image: ghcr.io/gethomepage/homepage:latest
     container_name: ${HOMEPAGE_CONTAINER_NAME:-homepage}
     ports:
-      - "${HOMEPAGE_PORT:-3002}:3002"
+      # Homepage слухає 3000 всередині; зовні 3002 (3000 зайнятий Dockhand)
+      - "${HOMEPAGE_PORT:-3002}:3000"
     extra_hosts:
       # Доступ до API-портів інших стеків на хості (віджети)
       - "host.docker.internal:host-gateway"
