@@ -69,3 +69,7 @@ body {
 #footer:hover {
   opacity: 1;
 }
+
+.information-widget-glances {
+  pointer-events: none;
+}
