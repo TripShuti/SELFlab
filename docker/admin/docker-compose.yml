@@ -59,9 +59,10 @@ services:
       - TZ=${TZ:-Europe/Kyiv}
       - PUID=${PUID:-1000}
       - PGID=${PGID:-1000}
-    group_add:
-      # gid групи docker на хості (`getent group docker` → docker:x:113:trip)
-      - "113"
+    environment:
+      - TZ=${TZ:-Europe/Kyiv}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
       # Host-валідація: пускати тільки ці Host-заголовки (з портом!)
       - HOMEPAGE_ALLOWED_HOSTS=${HOMEPAGE_ALLOWED_HOSTS:-homepage.home:8443,192.168.1.110:3002,127.0.0.1:3002}
       # Секрети віджетів з Dockhand env → у контейнер (щоб не були "unused")
@@ -73,6 +74,9 @@ services:
       - HOMEPAGE_VAR_TAILSCALE_TAILNET=${HOMEPAGE_VAR_TAILSCALE_TAILNET:-}
       - HOMEPAGE_VAR_TAILSCALE_DEVICEID=${HOMEPAGE_VAR_TAILSCALE_DEVICEID:-}
       - HOMEPAGE_VAR_IMMICH_KEY=${HOMEPAGE_VAR_IMMICH_KEY:-}
+    group_add:
+      # gid групи docker на хості (`getent group docker` → docker:x:113:trip)
+      - "113"
     restart: unless-stopped
 
   kopia:
