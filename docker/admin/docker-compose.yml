@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
 
   homepage:
-    image: ghcr.io/gethomepage/gethomepage:latest
+    image: ghcr.io/gethomepage/homepage:latest
     container_name: ${HOMEPAGE_CONTAINER_NAME:-homepage}
     ports:
       - "${HOMEPAGE_PORT:-3000}:3000"
