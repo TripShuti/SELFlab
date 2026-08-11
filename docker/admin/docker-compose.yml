@@ -21,6 +21,18 @@ services:
     container_name: ${UPTIME_KUMA_CONTAINER_NAME:-uptime-kuma}
     ports:
       - "${UPTIME_KUMA_PORT:-3001}:3001"
+    extra_hosts:
+      # Внутрішні домени резолвляться локально, щоб не спамити DNS (Pi-hole)
+      - "vault.home:${LAN_IP:-192.168.1.110}"
+      - "jellyfin.home:${LAN_IP:-192.168.1.110}"
+      - "qbittorrent.home:${LAN_IP:-192.168.1.110}"
+      - "navidrome.home:${LAN_IP:-192.168.1.110}"
+      - "immich.home:${LAN_IP:-192.168.1.110}"
+      - "stirling.home:${LAN_IP:-192.168.1.110}"
+      - "libretranslate.home:${LAN_IP:-192.168.1.110}"
+      - "kuma.home:${LAN_IP:-192.168.1.110}"
+      - "kopia.home:${LAN_IP:-192.168.1.110}"
+      - "homepage.home:${LAN_IP:-192.168.1.110}"
     volumes:
       - ${UPTIME_KUMA_DATA:-/home/trip/uptime-kuma}:/app/data
       # Кореневий сертифікат Caddy — щоб монітори довіряли https://*.home:8443
@@ -51,12 +63,26 @@ services:
     extra_hosts:
       # Доступ до API-портів інших стеків на хості (віджети)
       - "host.docker.internal:host-gateway"
+      # Внутрішні домени резолвляться локально, щоб не спамити DNS (Pi-hole)
+      - "vault.home:${LAN_IP:-192.168.1.110}"
+      - "jellyfin.home:${LAN_IP:-192.168.1.110}"
+      - "qbittorrent.home:${LAN_IP:-192.168.1.110}"
+      - "navidrome.home:${LAN_IP:-192.168.1.110}"
+      - "immich.home:${LAN_IP:-192.168.1.110}"
+      - "stirling.home:${LAN_IP:-192.168.1.110}"
+      - "libretranslate.home:${LAN_IP:-192.168.1.110}"
+      - "kuma.home:${LAN_IP:-192.168.1.110}"
+      - "kopia.home:${LAN_IP:-192.168.1.110}"
+      - "homepage.home:${LAN_IP:-192.168.1.110}"
+      - "dockhand.home:${LAN_IP:-192.168.1.110}"
+      - "wishes.home:${LAN_IP:-192.168.1.110}"
+      - "psn.home:${LAN_IP:-192.168.1.110}"
     volumes:
       - ${HOMEPAGE_CONFIG:-/home/trip/homepage}:/app/config
     environment:
       - TZ=${TZ:-Europe/Kyiv}
       # Host-валідація: пускати тільки ці Host-заголовки (з портом!)
-      - HOMEPAGE_ALLOWED_HOSTS=${HOMEPAGE_ALLOWED_HOSTS:-homepage.home:8443,192.168.1.110:3002,127.0.0.1:3002}
+      - HOMEPAGE_ALLOWED_HOSTS=${HOMEPAGE_ALLOWED_HOSTS:-homepage.home:8443,${LAN_IP:-192.168.1.110}:3002,127.0.0.1:3002}
       # Секрети віджетів з Dockhand env → у контейнер (щоб не були "unused")
       - HOMEPAGE_VAR_JELLYFIN_KEY=${HOMEPAGE_VAR_JELLYFIN_KEY:-}
       - HOMEPAGE_VAR_QBITTORRENT_USERNAME=${HOMEPAGE_VAR_QBITTORRENT_USERNAME:-}
