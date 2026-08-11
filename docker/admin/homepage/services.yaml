@@ -55,7 +55,7 @@
     - Dockhand:
         href: http://dockhand.home:3000/stacks
         description: Керування контейнерами
-        icon: docker
+        icon: dockhand
     - Vaultwarden:
         href: https://vault.home:8443
         description: Менеджер паролів

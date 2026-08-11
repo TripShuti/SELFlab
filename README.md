@@ -27,14 +27,14 @@
 ## Структура
 
 ```
-homelab/
+SELFlab/
 ├── docker/
 │   ├── media/          # jellyfin, qbittorrent, navidrome
-│   ├── immich/          # фото-бекап
-│   ├── network/         # pihole, tailscale
-│   ├── translate/       # stirling-pdf, libretranslate
-│   └── admin/           # vaultwarden, uptime-kuma, kopia, caddy
-└── .gitignore
+│   ├── immich/         # фото-бекап
+│   ├── network/        # pihole, tailscale
+│   ├── translate/      # stirling-pdf, libretranslate
+│   └── admin/          # vaultwarden, uptime-kuma, kopia, caddy
+│       └── homepage/   # конфіг дашборду (yaml + custom.css)
 └── .gitignore
 ```
 
@@ -123,6 +123,8 @@ kopia і жодних Deploy в Dockhand.
 - rclone у цьому образі лежить у `/usr/bin/rclone` (не в PATH контейнера)
 - Монітор Kopia в Uptime Kuma: приймати коди `200-299,401` — Kopia віддає
   логін-сторінку з кодом 401 (браузер її рендерить, чекер — ні)
+- CLI-снапшот не з'являється в UI одразу (сервер не бачить змін іншого
+  процесу): вкладка Snapshots → кнопка синхронізації, або `docker restart kopia`
 
 ## Доступ до сервісів (HTTPS через Caddy)
 
@@ -180,7 +182,8 @@ Caddy з власним внутрішнім CA. Усі сервіси з веб
 - Секрети віджетів не в репо: заповнюються в Dockhand (Env) як `HOMEPAGE_VAR_*`
   (jellyfin key, qbittorrent login, pihole token, tailscale key+tailnet+deviceid, immich key)
 - Статус контейнерів — через Uptime Kuma
-- Після зміни конфігу: рестарт контейнера (`docker restart homepage`)
+- Після зміни конфігу: онови сторінку (конфіги читаються гаряче).
+  Рестарт/Deploy потрібен тільки після зміни env-змінних у Dockhand
 
 ## Запуск стеку
 
