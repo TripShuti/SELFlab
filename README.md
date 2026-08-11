@@ -1,5 +1,7 @@
 # SELFlab
-
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/05150775-1cd6-4cd4-a24a-572384072031" width="720">
+</p>
 Конфіги та docker-compose стеки мого домашнього сервера. Тут те, що реально
 крутиться 24/7 — медіа, бекапи фото, мережа, дрібні self-hosted утиліти.
 
