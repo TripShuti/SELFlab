@@ -57,8 +57,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     environment:
       - TZ=${TZ:-Europe/Kyiv}
-      - PUID=${PUID:-1000}
-      - PGID=${PGID:-1000}
       # Host-валідація: пускати тільки ці Host-заголовки (з портом!)
       - HOMEPAGE_ALLOWED_HOSTS=${HOMEPAGE_ALLOWED_HOSTS:-homepage.home:8443,192.168.1.110:3002,127.0.0.1:3002}
       # Секрети віджетів з Dockhand env → у контейнер (щоб не були "unused")
