@@ -70,11 +70,3 @@
         href: https://kopia.home:8443
         description: Бекапи в Google Drive
         icon: kopia
-
-- System:
-    - Docker:
-        href: http://host.docker.internal:3000
-        description: Статус контейнерів
-        icon: docker
-        widget:
-          type: docker

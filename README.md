@@ -176,8 +176,8 @@ Caddy з власним внутрішнім CA. Усі сервіси з веб
 - Конфіг: `docker/admin/homepage/` (`settings.yaml`, `services.yaml`,
   `widgets.yaml`) → копіюється на сервер у `HOMEPAGE_CONFIG` (`/home/trip/homepage`)
 - Секрети віджетів не в репо: заповнюються в Dockhand (Env) як `HOMEPAGE_VAR_*`
-  (jellyfin key, qbittorrent login, pihole token, tailscale key+tailnet, immich key)
-- Статус контейнерів — через `docker.sock` (read-only маунт)
+  (jellyfin key, qbittorrent login, pihole token, tailscale key+tailnet+deviceid, immich key)
+- Статус контейнерів — через Uptime Kuma
 - Після зміни конфігу: рестарт контейнера (`docker restart homepage`)
 
 ## Запуск стеку
