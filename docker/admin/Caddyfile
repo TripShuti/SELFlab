@@ -42,3 +42,8 @@ kopia.home {
     tls internal
     reverse_proxy host.docker.internal:51515
 }
+
+homepage.home {
+    tls internal
+    reverse_proxy host.docker.internal:3000
+}

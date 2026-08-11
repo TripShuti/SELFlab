@@ -17,6 +17,7 @@
 | LibreTranslate | self-hosted переклад тексту | 3020 |
 | Vaultwarden | менеджер паролів (Bitwarden-сумісний) | 8192 |
 | Uptime Kuma | моніторинг доступності сервісів | 3001 |
+| Homepage | дашборд усіх сервісів | 3000 |
 | Kopia | бекап конфігів у Google Drive | 51515 |
 | Caddy | HTTPS-проксі з внутрішнім CA (`https://<сервіс>.home:8443`) | 8443 |
 
@@ -67,11 +68,60 @@ Kopia + rclone. Тільки налаштування — фото, музика
    (OAuth через браузер, client_id лишити порожнім — внутрішній ключ rclone
    для конфігів цілком тягне)
 2. Перевірка: `rclone lsd --config /home/trip/kopia/rclone.conf gdrive:`
-3. У веб-UI Kopia (http://host:51515): **Repository → Rclone** → remote path
-   `gdrive:kopia` (папку створить сама), пароль — `KOPIA_PASSWORD` з `.env`
-4. Створити снапшот-сети для потрібних `/sources/*` (jellyfin, qbittorrent,
-   navidrome, pihole, dnsmasq, tailscale, stirling, vaultwarden, uptime-kuma) →
-   політика «щодня 02:00, 30 денних + 12 місячних» → перший бекап вручну
+3. Створити репозиторій у CLI (UI-флоу не працює — див. «Граблі» нижче):
+
+   ```bash
+   docker exec kopia kopia --config-file=/app/config/repository.config \
+     repository create rclone --remote-path=gdrive:kopia \
+     --rclone-exe=/usr/bin/rclone --rclone-startup-timeout=180s
+   ```
+
+4. Глобальна політика (10 latest + 30 денних + 12 місячних, авто-бекап о 02:00):
+
+   ```bash
+   docker exec kopia kopia --config-file=/app/config/repository.config \
+     policy set --global --keep-latest=10 --keep-hourly=0 --keep-daily=30 \
+     --keep-weekly=0 --keep-monthly=12 --keep-annual=0 \
+     --snapshot-time=02:00 --compression=zstd
+   ```
+
+### Паролі (два різні!)
+
+- `KOPIA_PASSWORD` — ключ шифрування репозиторію. Вводиться один раз при
+  створенні репо, далі підставляється автоматично.
+- `KOPIA_SERVER_PASSWORD` — пароль входу у веб-UI/API (`https://kopia.home:8443`).
+  Міняється в Dockhand → env → Deploy (не забути перелогінитись в UI).
+
+### Ручний бекап
+
+```bash
+docker exec -d kopia bash -c \
+  'kopia --config-file=/app/config/repository.config snapshot create --progress \
+    /sources/qbittorrent /sources/navidrome /sources/pihole /sources/dnsmasq \
+    /sources/tailscale /sources/stirling /sources/uptime-kuma /sources/jellyfin \
+    > /tmp/backup.log 2>&1'
+# прогрес:
+docker exec kopia tail -f /tmp/backup.log
+```
+
+Перший снапшот jellyfin (~620 МБ) іде довше за годину — Google троттлить
+великі заливи. Поки `snapshot list` не покаже всі джерела — не рестарти
+kopia і жодних Deploy в Dockhand.
+
+### Граблі (якщо колись щось упаде)
+
+- **UI-флоу не працює**: rclone-конфіг змонтований `:ro`, тож Kopia падає з
+  `unable to start rclone: timed out` (жорсткий дефолт 15 с; rclone v1.68.2
+  з read-only конфігом з'їдає це вікно ретраями). Тільки CLI і
+  `--rclone-startup-timeout=180s` — без нього сервер не відкриє репо
+  при кожному рестарті
+- **Абсолютні шляхи в UI**: відносний шлях склеюється з домашнім каталогом
+  і падає з "path does not exist"
+- **`Failed to save config after 10 tries`** в логах — безпечний шум від
+  `:ro` маунта rclone.conf, на роботу не впливає
+- rclone у цьому образі лежить у `/usr/bin/rclone` (не в PATH контейнера)
+- Монітор Kopia в Uptime Kuma: приймати коди `200-299,401` — Kopia віддає
+  логін-сторінку з кодом 401 (браузер її рендерить, чекер — ні)
 
 ## Доступ до сервісів (HTTPS через Caddy)
 
@@ -81,7 +131,8 @@ Caddy з власним внутрішнім CA. Усі сервіси з веб
 
 `vault.home` (8192), `jellyfin.home` (8096), `qbittorrent.home` (8080),
 `navidrome.home` (4533), `immich.home` (2283), `stirling.home` (3010),
-`libretranslate.home` (3020), `kuma.home` (3001), `kopia.home` (51515).
+`libretranslate.home` (3020), `kuma.home` (3001), `kopia.home` (51515),
+`homepage.home` (3000).
 
 - **Вдома** — просто відкриваєш адресу, tailscale не потрібен. Один раз
   встанови CA-сертифікат Caddy на пристрій:
@@ -91,7 +142,18 @@ Caddy з власним внутрішнім CA. Усі сервіси з веб
   (DNS → Nameservers → Custom → tailnet IP сервера + Override local DNS)
   налаштований pihole як DNS, тож `.home` імена резолвляться і трафік іде через
   маршрут `192.168.1.0/24`
-- У Pi-hole має бути Local DNS record для кожного імені → LAN IP сервера
+- У Pi-hole має бути Local DNS record для кожного імені → LAN IP сервера.
+  Перевірити всі одразу:
+
+  ```bash
+  for h in vault jellyfin qbittorrent navidrome immich stirling libretranslate kuma kopia homepage; do
+    r=$(dig @192.168.1.110 "$h.home" +short)
+    [ -z "$r" ] && echo "MISSING: $h.home" || echo "OK: $h.home -> $r"
+  done
+  ```
+
+- Uptime Kuma довіряє внутрішньому CA через `NODE_EXTRA_CA_CERTS` + маунт
+  `root.crt` (див. `docker/admin/docker-compose.yml`)
 - qBittorrent: у Web UI → Налаштування → Веб-інтерфейс вимкни
   **Host header validation**, інакше віддаватиме помилку через проксі
 - Прямий доступ по старих адресах (`http://jellyfin.home:8096`) лишається
@@ -104,8 +166,19 @@ Caddy з власним внутрішнім CA. Усі сервіси з веб
   NET=$(docker inspect caddy -f '{{range $k,$v := .NetworkSettings.Networks}}{{$k}}{{end}}')
   SUBNET=$(docker network inspect "$NET" -f '{{(index .IPAM.Config 0).Subnet}}')
   # порти всіх сервісів, які Caddy проксіює (див. Caddyfile)
-  sudo ufw allow from "$SUBNET" to any port 8192,8096,8080,4533,2283,3010,3020,3001,51515 proto tcp
+  sudo ufw allow from "$SUBNET" to any port 8192,8096,8080,4533,2283,3010,3020,3001,3000,51515 proto tcp
   ```
+
+## Дашборд Homepage
+
+`https://homepage.home:8443` — головний екран із усіма сервісами.
+
+- Конфіг: `docker/admin/homepage/` (`settings.yaml`, `services.yaml`,
+  `widgets.yaml`) → копіюється на сервер у `HOMEPAGE_CONFIG` (`/home/trip/homepage`)
+- Секрети віджетів не в репо: заповнюються в Dockhand (Env) як `HOMEPAGE_VAR_*`
+  (jellyfin key, qbittorrent login, pihole token, tailscale key+tailnet, immich key)
+- Статус контейнерів — через `docker.sock` (read-only маунт)
+- Після зміни конфігу: рестарт контейнера (`docker restart homepage`)
 
 ## Запуск стеку
 

@@ -1,0 +1,65 @@
+- Media:
+    - Jellyfin:
+        href: https://jellyfin.home:8443
+        description: Фільми і серіали
+        icon: jellyfin
+        widget:
+          type: jellyfin
+    - Navidrome:
+        href: https://navidrome.home:8443
+        description: Музика
+        icon: navidrome
+
+- Downloads:
+    - qBittorrent:
+        href: https://qbittorrent.home:8443
+        description: Торенти
+        icon: qbittorrent
+        widget:
+          type: qbittorrent
+
+- Network:
+    - Pi-hole:
+        href: http://192.168.1.110/admin
+        description: DNS-фільтр і реклама
+        icon: pi-hole
+        widget:
+          type: pihole
+    - Tailscale:
+        href: https://login.tailscale.com/admin/machines
+        description: VPN-мережа
+        icon: tailscale
+        widget:
+          type: tailscale
+
+- Admin:
+    - Vaultwarden:
+        href: https://vault.home:8443
+        description: Менеджер паролів
+        icon: bitwarden
+    - Immich:
+        href: https://immich.home:8443
+        description: Галерея фото
+        icon: immich
+        widget:
+          type: immich
+    - Stirling PDF:
+        href: https://stirling.home:8443
+        description: Робота з PDF
+        icon: stirling-pdf
+    - Uptime Kuma:
+        href: https://kuma.home:8443
+        description: Моніторинг
+        icon: uptime-kuma
+    - Kopia:
+        href: https://kopia.home:8443
+        description: Бекапи в Google Drive
+        icon: kopia
+
+- System:
+    - Docker:
+        href: http://host.docker.internal:3000
+        description: Статус контейнерів
+        icon: docker
+        widget:
+          type: docker

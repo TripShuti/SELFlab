@@ -42,6 +42,24 @@ services:
       - ${CADDY_DATA:-/home/trip/caddy/data}:/data
     restart: unless-stopped
 
+  homepage:
+    image: ghcr.io/gethomepage/gethomepage:latest
+    container_name: ${HOMEPAGE_CONTAINER_NAME:-homepage}
+    ports:
+      - "${HOMEPAGE_PORT:-3000}:3000"
+    extra_hosts:
+      # Доступ до API-портів інших стеків на хості (віджети)
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ${HOMEPAGE_CONFIG:-/home/trip/homepage}:/app/config
+      # Статус контейнерів на дашборді (read-only)
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - TZ=${TZ:-Europe/Kyiv}
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+    restart: unless-stopped
+
   kopia:
     image: kopia/kopia:latest
     container_name: ${KOPIA_CONTAINER_NAME:-kopia}
