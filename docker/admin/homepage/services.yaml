@@ -31,7 +31,8 @@
         widget:
           type: pihole
           url: http://host.docker.internal:80
-          token: "{{HOMEPAGE_VAR_PIHOLE_TOKEN}}"
+          version: 6
+          key: "{{HOMEPAGE_VAR_PIHOLE_TOKEN}}"
     - Tailscale:
         href: https://login.tailscale.com/admin/machines
         description: VPN-мережа
@@ -41,6 +42,7 @@
           url: https://api.tailscale.com
           key: "{{HOMEPAGE_VAR_TAILSCALE_KEY}}"
           tailnet: "{{HOMEPAGE_VAR_TAILSCALE_TAILNET}}"
+          deviceid: "{{HOMEPAGE_VAR_TAILSCALE_DEVICEID}}"
 
 - Admin:
     - Vaultwarden:
@@ -54,6 +56,7 @@
         widget:
           type: immich
           url: http://host.docker.internal:2283
+          version: 2
           key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
     - Stirling PDF:
         href: https://stirling.home:8443
