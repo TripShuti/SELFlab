@@ -78,6 +78,9 @@ services:
       # ОС хоста, а не контейнера; /sys — температура CPU (hwmon)
       - /etc/os-release:/etc/os-release:ro
       - /sys:/sys:ro
+      # Диски хоста: без цих bind-mount glances бачить лише mount-точки контейнера
+      - /:/mnt/root:ro
+      - /mnt/ssd:/mnt/ssd:ro
     pid: host
     restart: unless-stopped
 

@@ -6,5 +6,5 @@
     cputemp: true
     uptime: true
     disk:
-      - /
+      - /mnt/root
       - /mnt/ssd
