@@ -129,6 +129,12 @@ kopia і жодних Deploy в Dockhand.
   логін-сторінку з кодом 401 (браузер її рендерить, чекер — ні)
 - CLI-снапшот не з'являється в UI одразу (сервер не бачить змін іншого
   процесу): вкладка Snapshots → кнопка синхронізації, або `docker restart kopia`
+- **Caddy не піднімається** (`mount src=...Caddyfile ... not a directory`):
+  docker створює відсутній host-шлях bind-mount як директорію. Перевір:
+  `docker compose config | grep -A3 Caddyfile` — source має бути
+  `/home/trip/caddy/Caddyfile` (файл), а не `/home/trip/caddy` (папка) —
+  якщо папка, виправ `CADDY_CONFIG` у `.env`/Dockhand; якщо шлях правильний,
+  а файл зник — `rmdir /home/trip/caddy/Caddyfile` і скопіюй файл з репо
 
 ## Доступ до сервісів (HTTPS через Caddy)
 
