@@ -68,10 +68,6 @@
         href: https://kopia.home:8443
         description: Бекапи в Google Drive
         icon: kopia
-    - LibreTranslate:
-        href: https://libretranslate.home:8443
-        description: Переклад тексту
-        icon: libretranslate
     - Stirling PDF:
         href: https://stirling.home:8443
         description: Робота з PDF

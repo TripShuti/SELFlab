@@ -8,19 +8,3 @@ services:
       - ${STIRLING_TESSDATA:-/home/trip/stirling-pdf/tessdata}:/usr/share/tessdata
       - ${STIRLING_CONFIG:-/home/trip/stirling-pdf/configs}:/configs
     restart: unless-stopped
-
-  libretranslate:
-    image: libretranslate/libretranslate:latest
-    container_name: ${LIBRETRANSLATE_CONTAINER_NAME:-libretranslate}
-    ports:
-      - "${LIBRETRANSLATE_PORT:-3020}:5000"
-    environment:
-      # Моделі перекладу, які завантажуються при першому старті (кожна ~сотні МБ)
-      - LT_LOAD_ONLY=${LT_LOAD_ONLY:-uk,en}
-    volumes:
-      - libre-trans_lt-local:/home/libretranslate/.local
-    restart: unless-stopped
-
-volumes:
-  libre-trans_lt-local:
-    external: true
