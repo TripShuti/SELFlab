@@ -11,6 +11,8 @@ body {
   border-bottom: 1px solid rgba(148, 163, 184, 0.14);
   padding-bottom: 0.75rem;
   margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 30;
 }
 
 #layout-groups .bookmark > a {
@@ -29,6 +31,14 @@ body {
 
 #layout-groups .bookmark-icon {
   background: rgba(56, 189, 248, 0.06);
+}
+
+.bookmark-group {
+  overflow: visible;
+}
+
+.bookmark-group .overflow-hidden {
+  overflow: visible;
 }
 
 .service {
