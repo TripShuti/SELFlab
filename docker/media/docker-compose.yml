@@ -6,7 +6,7 @@ services:
       - ${JELLYFIN_PORT:-8096}:8096
     volumes:
       - ${JELLYFIN_CONFIG:-/home/trip/jellyfin/config}:/config
-      - ${TORRENTS_DIR:-/mnt/ssd/torrents}:/data/media:ro
+      - ${TORRENTS_DIR:-/mnt/ssd/torrents}:/data/media:rw
     environment:
       - TZ=${TZ:-Europe/Kyiv}
     restart: unless-stopped
