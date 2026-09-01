@@ -134,15 +134,9 @@ services:
       - ${KOPIA_LOGS:-/home/trip/kopia/logs}:/app/logs
       # rclone-конфіг для бекапу в Google Drive (remote gdrive)
       - ${KOPIA_RCLONE_CONFIG:-/home/trip/kopia/rclone.conf}:/app/rclone/rclone.conf:ro
-      # Джерела для бекапу (read-only)
-      - ${JELLYFIN_CONFIG:-/home/trip/jellyfin/config}:/sources/jellyfin:ro
-      - ${QBITTORRENT_CONFIG:-/mnt/ssd/qbittorrent/config}:/sources/qbittorrent:ro
-      - ${NAVIDROME_DATA:-/home/trip/navidrome/data}:/sources/navidrome:ro
-      - ${PIHOLE_ETC:-/home/trip/pihole_unbound/etc-pihole}:/sources/pihole:ro
-      - ${PIHOLE_DNSMASQ:-/home/trip/pihole_unbound/etc-dnsmasq.d}:/sources/dnsmasq:ro
-      - ${TAILSCALE_STATE:-/home/trip/tailscale/state}:/sources/tailscale:ro
-      - ${STIRLING_CONFIG:-/home/trip/stirling-pdf/configs}:/sources/stirling:ro
+      # Джерела для бекапу (read-only) - тільки потрібні сервіси
       - ${VAULTWARDEN_DATA:-/home/trip/vaultwarden}:/sources/vaultwarden:ro
-      - ${UPTIME_KUMA_DATA:-/home/trip/uptime-kuma}:/sources/uptime-kuma:ro
       - ${HOMEPAGE_CONFIG:-/home/trip/homepage}:/sources/homepage:ro
+      - ${PSNSELF_CONFIG:-/home/trip/.config/psnself}:/sources/psnself:ro
+      - ${SELFWISHES_DATA:-/opt/selfwishes/data}:/sources/selfwishes:ro
     restart: unless-stopped
