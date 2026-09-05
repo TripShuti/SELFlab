@@ -1,6 +1,6 @@
 services:
   jellyfin:
-    image: jellyfin/jellyfin:latest
+    image: jellyfin/jellyfin:12.0-rc7
     container_name: ${JELLYFIN_CONTAINER_NAME:-jellyfin}
     ports:
       - ${JELLYFIN_PORT:-8096}:8096
