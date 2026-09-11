@@ -1,0 +1,5 @@
+# SearXNG limiter / botdetection конфіг.
+# Файл має ІСНУВАТИ на хості (SEARXNG_CONFIG/limiter.toml), інакше в логах
+# WARNING "missing config file: /etc/searxng/limiter.toml".
+# Порожній (тільки коментарі) = вбудовані дефолти, яких достатньо для 1 юзера.
+# Кастомізація: https://docs.searxng.org/admin/botdetection.html

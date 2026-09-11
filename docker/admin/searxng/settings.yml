@@ -25,3 +25,11 @@ ui:
 # Ім'я сервісу з docker-compose.yml (не localhost!)
 valkey:
   url: valkey://searxng-valkey:6379/0
+
+engines:
+  # Onion-движки — потребують Tor-проксі, якого в стеку нема.
+  # Без цього в логах вічні ERROR "can't register engine (loading engine failed)".
+  - name: ahmia
+    disabled: true
+  - name: torch
+    disabled: true

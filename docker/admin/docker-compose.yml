@@ -121,6 +121,7 @@ services:
       # всередині образу), інакше entrypoint падає з "Permission denied":
       #   mkdir -p /home/trip/searxng
       #   curl -fsSL https://raw.githubusercontent.com/TripShuti/SELFlab/main/docker/admin/searxng/settings.yml -o /home/trip/searxng/settings.yml
+      #   curl -fsSL https://raw.githubusercontent.com/TripShuti/SELFlab/main/docker/admin/searxng/limiter.toml -o /home/trip/searxng/limiter.toml
       #   sudo chown -R 977:977 /home/trip/searxng
       - ${SEARXNG_CONFIG:-/home/trip/searxng}:/etc/searxng:rw
     environment:
