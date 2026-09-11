@@ -83,3 +83,30 @@ body {
 .information-widget-glances {
   pointer-events: none;
 }
+
+/* Пошук SearXNG — окремий рядок на всю ширину під сенсорами, над закладками.
+   Homepage форсить search у правий контейнер хедера (#information-widgets-right),
+   тому вибиваємо його на новий рядок через flex-basis. */
+#information-widgets-right {
+  flex-basis: 100%;
+}
+
+.information-widget-search {
+  width: 100%;
+}
+
+/* Хедер вище закладок у стеку, інакше #layout-groups (z-index: 30) перекриє дропдаун */
+#information-widgets {
+  position: relative;
+  z-index: 40;
+}
+
+/* Дропдаун підказок — спливає поверх закладок, а не розпихає контент.
+   Селектор по headlessui-id стабільніший за utility-класи (вони генеруються). */
+.information-widget-search [id^="headlessui-combobox-options-"] {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+}
