@@ -72,3 +72,7 @@
         href: https://stirling.home:8443
         description: Робота з PDF
         icon: stirling-pdf
+    - SearXNG:
+        href: https://searxng.home:8443
+        description: Приватний метапошук
+        icon: searxng

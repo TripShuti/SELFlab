@@ -42,3 +42,8 @@ homepage.home {
     tls internal
     reverse_proxy host.docker.internal:3002
 }
+
+searxng.home {
+    tls internal
+    reverse_proxy host.docker.internal:8081
+}

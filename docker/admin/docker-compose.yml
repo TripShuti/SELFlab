@@ -32,6 +32,7 @@ services:
       - "kuma.home:${LAN_IP:-192.168.1.110}"
       - "kopia.home:${LAN_IP:-192.168.1.110}"
       - "homepage.home:${LAN_IP:-192.168.1.110}"
+      - "searxng.home:${LAN_IP:-192.168.1.110}"
     volumes:
       - ${UPTIME_KUMA_DATA:-/home/trip/uptime-kuma}:/app/data
       # Кореневий сертифікат Caddy — щоб монітори довіряли https://*.home:8443
@@ -72,6 +73,7 @@ services:
       - "kuma.home:${LAN_IP:-192.168.1.110}"
       - "kopia.home:${LAN_IP:-192.168.1.110}"
       - "homepage.home:${LAN_IP:-192.168.1.110}"
+      - "searxng.home:${LAN_IP:-192.168.1.110}"
       - "dockhand.home:${LAN_IP:-192.168.1.110}"
       - "wishes.home:${LAN_IP:-192.168.1.110}"
       - "psn.home:${LAN_IP:-192.168.1.110}"
@@ -108,6 +110,51 @@ services:
     pid: host
     restart: unless-stopped
 
+  searxng:
+    image: ${SEARXNG_IMAGE:-searxng/searxng:latest}
+    container_name: ${SEARXNG_CONTAINER_NAME:-searxng}
+    ports:
+      # Всередині завжди 8080; зовні 8081 (8080 зайнятий qBittorrent)
+      - "${SEARXNG_PORT:-8081}:8080"
+    volumes:
+      # rw: перший старт генерує дефолтні settings.yml/limiter.toml, якщо порожньо
+      - ${SEARXNG_CONFIG:-/home/trip/searxng}:/etc/searxng:rw
+    environment:
+      # Слєш в кінці обов'язковий, інакше ламаються пагінація і редіректи
+      - SEARXNG_BASE_URL=${SEARXNG_BASE_URL:-https://searxng.home:8443/}
+      # openssl rand -hex 32 → тільки Dockhand env, не в репо
+      - SEARXNG_SECRET=${SEARXNG_SECRET}
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    depends_on:
+      searxng-valkey:
+        condition: service_healthy
+    restart: unless-stopped
+
+  searxng-valkey:
+    image: ${SEARXNG_VALKEY_IMAGE:-valkey/valkey:9-alpine}
+    container_name: ${SEARXNG_VALKEY_CONTAINER_NAME:-searxng-valkey}
+    command: valkey-server --save 30 1 --loglevel warning
+    volumes:
+      - searxng-valkey-data:/data
+    healthcheck:
+      test: ["CMD", "valkey-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
   kopia:
     image: kopia/kopia:latest
     container_name: ${KOPIA_CONTAINER_NAME:-kopia}
@@ -137,6 +184,10 @@ services:
       # Джерела для бекапу (read-only) - тільки потрібні сервіси
       - ${VAULTWARDEN_DATA:-/home/trip/vaultwarden}:/sources/vaultwarden:ro
       - ${HOMEPAGE_CONFIG:-/home/trip/homepage}:/sources/homepage:ro
+      - ${SEARXNG_CONFIG:-/home/trip/searxng}:/sources/searxng:ro
       - ${PSNSELF_CONFIG:-/home/trip/.config/psnself}:/sources/psnself:ro
       - ${SELFWISHES_DATA:-/opt/selfwishes/data}:/sources/selfwishes:ro
     restart: unless-stopped
+
+volumes:
+  searxng-valkey-data:

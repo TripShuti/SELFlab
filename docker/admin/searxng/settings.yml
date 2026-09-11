@@ -1,0 +1,27 @@
+# Шаблон для SEARXNG_CONFIG (/home/trip/searxng/settings.yml).
+# Секрет НЕ тут — він інжектиться через env SEARXNG_SECRET з Dockhand.
+use_default_settings: true
+
+server:
+  base_url: "https://searxng.home:8443/"
+  limiter: true
+  image_proxy: true
+  # GET обов'язковий для search-віджета Homepage (?q= в URL).
+  # За дефолтом форма SearXNG шле POST — з POST віджет не працює.
+  method: GET
+
+search:
+  safe_search: 0
+  autocomplete: "duckduckgo"
+  formats:
+    - html
+    - json
+
+ui:
+  default_theme: simple
+  results_on_new_tab: true
+  query_in_title: false
+
+# Ім'я сервісу з docker-compose.yml (не localhost!)
+valkey:
+  url: valkey://searxng-valkey:6379/0

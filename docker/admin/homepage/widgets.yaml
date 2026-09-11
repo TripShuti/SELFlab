@@ -1,3 +1,15 @@
+- search:
+    provider: custom
+    # Браузерна сторона — публічний URL через Caddy
+    url: https://searxng.home:8443/search?q=
+    # Серверна сторона (проксі Homepage /api/search/searchSuggestion) —
+    # внутрішнє ім'я сервісу, без TLS (у homepage немає Caddy CA, як у kuma)
+    # УВАГА: ключ строго suggestionUrl (маленька u) — suggestionURL ігнориться!
+    suggestionUrl: http://searxng:8080/autocompleter?q=
+    target: _blank
+    focus: true
+    showSearchSuggestions: true
+
 - glances:
     url: http://glances:61208
     version: 4
