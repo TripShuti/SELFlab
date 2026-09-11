@@ -117,19 +117,19 @@ services:
       # Всередині завжди 8080; зовні 8081 (8080 зайнятий qBittorrent)
       - "${SEARXNG_PORT:-8081}:8080"
     volumes:
-      # rw: перший старт генерує дефолтні settings.yml/limiter.toml, якщо порожньо
+      # Перший старт: директорія має існувати і належати 977:977 (юзер searxng
+      # всередині образу), інакше entrypoint падає з "Permission denied":
+      #   mkdir -p /home/trip/searxng
+      #   curl -fsSL https://raw.githubusercontent.com/TripShuti/SELFlab/main/docker/admin/searxng/settings.yml -o /home/trip/searxng/settings.yml
+      #   sudo chown -R 977:977 /home/trip/searxng
       - ${SEARXNG_CONFIG:-/home/trip/searxng}:/etc/searxng:rw
     environment:
       # Слєш в кінці обов'язковий, інакше ламаються пагінація і редіректи
       - SEARXNG_BASE_URL=${SEARXNG_BASE_URL:-https://searxng.home:8443/}
       # openssl rand -hex 32 → тільки Dockhand env, не в репо
       - SEARXNG_SECRET=${SEARXNG_SECRET}
-    cap_drop:
-      - ALL
-    cap_add:
-      - CHOWN
-      - SETGID
-      - SETUID
+    # БЕЗ cap_drop: ламає створення settings.yml на першому старті (апстрім-баг searxng-docker#252).
+    # Офіційний compose-темалейт теж без caps.
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/healthz"]
       interval: 30s
