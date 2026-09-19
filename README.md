@@ -13,7 +13,7 @@
 | qBittorrent | торент-клієнт | 8080 |
 | Navidrome | музичний стрімінг (Subsonic API) | 4533 |
 | Immich | бекап і галерея фото з телефону | 2283 |
-| Pi-hole + Unbound | DNS-фільтрація реклами, свій рекурсивний резолвер | 80/443 |
+| Pi-hole + Knot Resolver | DNS-фільтрація реклами, свій рекурсивний резолвер | 80/443 |
 | Tailscale | VPN / exit node для доступу ззовні | — |
 | Stirling PDF | робота з PDF (мердж, OCR, конвертація) | 3010 |
 | Vaultwarden | менеджер паролів (Bitwarden-сумісний) | 8192 |
@@ -33,7 +33,7 @@ SELFlab/
 ├── docker/
 │   ├── media/          # jellyfin, qbittorrent, navidrome
 │   ├── immich/         # фото-бекап
-│   ├── network/        # pihole, tailscale
+│   ├── network/        # pihole, knot-resolver, tailscale
 │   ├── translate/      # stirling-pdf
 │   └── admin/          # vaultwarden, uptime-kuma, kopia, caddy, glances
 │       └── homepage/   # конфіг дашборду (yaml + custom.css)
@@ -62,7 +62,7 @@ SELFlab/
 ## Бекап конфігів
 
 `docker/admin` бекапить конфіги всіх стеків (jellyfin, qbittorrent, navidrome,
-pihole, tailscale, stirling, vaultwarden, uptime-kuma, homepage) у Google Drive
+pihole, knot-resolver, tailscale, stirling, vaultwarden, uptime-kuma, homepage) у Google Drive
 через Kopia + rclone. Тільки налаштування — фото, музика і торенти не входять.
 
 Разова підготовка на сервері:
@@ -239,7 +239,7 @@ docker compose up -d
 - Усі host-шляхи, порти, PUID/PGID і TZ задаються через env (див. `.env.example`
   кожної підпапки) — заміни `JELLYFIN_CONFIG`, `STORAGE_DIR`, `WEBUI_PORT` і т.д.
   на свої, і стек підніметься на твоїх шляхах без правки compose-файлів.
-- Pi-hole працює як DNS + DHCP-фільтр на весь домашній LAN, Unbound —
+- Pi-hole працює як DNS + DHCP-фільтр на весь домашній LAN, Knot Resolver —
   рекурсивний резолвер, щоб не ходити до чужих DNS-серверів.
 - Tailscale підіймає exit node, тому весь трафік з телефону/ноута може йти
   через домашню мережу коли я не вдома.
