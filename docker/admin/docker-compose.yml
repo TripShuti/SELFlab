@@ -79,6 +79,7 @@ services:
       - "psn.home:${LAN_IP:-192.168.1.110}"
     volumes:
       - ${HOMEPAGE_CONFIG:-/home/trip/homepage}:/app/config
+      - ${HOMEPAGE_ICONS:-/home/trip/homepage/icons}:/app/public/icons
     environment:
       - TZ=${TZ:-Europe/Kyiv}
       # Host-валідація: пускати тільки ці Host-заголовки (з портом!)
