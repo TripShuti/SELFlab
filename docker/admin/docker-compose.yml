@@ -189,7 +189,20 @@ services:
       - ${SEARXNG_CONFIG:-/home/trip/searxng}:/sources/searxng:ro
       - ${PSNSELF_CONFIG:-/home/trip/.config/psnself}:/sources/psnself:ro
       - ${SELFWISHES_DATA:-/opt/selfwishes/data}:/sources/selfwishes:ro
+      # selfbase (named volumes з іншого стеку, тому external внизу)
+      - selfbase_garage-data:/sources/selfbase-garage-data:ro
+      - selfbase_garage-meta:/sources/selfbase-garage-meta:ro
+      - selfbase_spacetimedb-data:/sources/selfbase-spacetimedb-data:ro
+      - selfbase_spacetimedb-config:/sources/selfbase-spacetimedb-config:ro
     restart: unless-stopped
 
 volumes:
   searxng-valkey-data:
+  selfbase_garage-data:
+    external: true
+  selfbase_garage-meta:
+    external: true
+  selfbase_spacetimedb-data:
+    external: true
+  selfbase_spacetimedb-config:
+    external: true
