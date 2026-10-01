@@ -36,7 +36,7 @@ SELFlab/
 │   ├── immich/         # фото-бекап
 │   ├── network/        # pihole, knot-resolver, tailscale
 │   ├── translate/      # stirling-pdf
-│   └── admin/          # vaultwarden, uptime-kuma, kopia, caddy, glances
+│   └── admin/          # vaultwarden, uptime-kuma, kopia, caddy, glances, searxng, homepage
 │       └── homepage/   # конфіг дашборду (yaml + custom.css)
 └── .gitignore
 ```
