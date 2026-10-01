@@ -20,7 +20,8 @@
 | Uptime Kuma | моніторинг доступності сервісів | 3001 |
 | Homepage | дашборд усіх сервісів | 3002 |
 | Glances | агент системного моніторингу для дашборду (REST API, без UI) | 61208 (внутрішній) |
-| Kopia | бекап конфігів у Google Drive | 51515 |
+| Kopia | бекап конфігів у Cloudflare R2 | 51515 |
+| SearXNG | метапошук | 8081 |
 | Caddy | HTTPS-проксі з внутрішнім CA (`https://<сервіс>.home:8443`) | 8443 |
 
 Всі порти, шляхи і основні налаштування задаються через env — порт у таблиці
@@ -78,14 +79,25 @@ SELFlab/
      --access-key=<AK> --secret-access-key=<SK>
    ```
 
-4. Глобальна політика (10 latest + 30 денних + 12 місячних, авто-бекап о 02:00):
+3. Глобальна політика (10 latest + 7 денних + 4 тижневих + 12 місячних +
+   3 річних, авто-бекап о 02:00; БД-шляхи тільки вручну — див. нижче):
 
    ```bash
    docker exec kopia kopia --config-file=/app/config/repository.config \
-     policy set --global --keep-latest=10 --keep-hourly=0 --keep-daily=30 \
-     --keep-weekly=0 --keep-monthly=12 --keep-annual=0 \
+     policy set --global --keep-latest=10 --keep-hourly=0 --keep-daily=7 \
+     --keep-weekly=4 --keep-monthly=12 --keep-annual=3 \
      --snapshot-time=02:00 --compression=zstd
+   # БД тільки вручну (стопнуті скриптом), авто о 02:00 їх не чіпає:
+   for s in vaultwarden psnself selfwishes selfbase-garage-data \
+     selfbase-garage-meta selfbase-spacetimedb-data selfbase-spacetimedb-config; do
+     docker exec kopia kopia --config-file=/app/config/repository.config \
+       policy set /sources/$s --manual
+   done
    ```
+
+   Джерела зараз (9): `vaultwarden`, `homepage`, `searxng` (з цього репо) +
+   `psnself`, `selfwishes` і 4 волюми `selfbase-*` (зовнішні стеки,
+   в kopia змонтовані як external volumes).
 
 ### Паролі (два різні!)
 
@@ -94,22 +106,26 @@ SELFlab/
 - `KOPIA_SERVER_PASSWORD` — пароль входу у веб-UI/API (`https://kopia.home:8443`).
   Міняється в Dockhand → env → Deploy (не забути перелогінитись в UI).
 
-### Ручний бекап
+### Нічний бекап БД (стоп-кадр)
+
+Файловий бекап живої БД може бути рваним, тому БД бекапляться зупиненими
+скриптом `/home/trip/db-backup.sh` по крону о 01:55 (стоп 6 контейнерів →
+`snapshot create` 7 шляхів → старт; авто о 02:00 для цих шляхів вимкнене
+через `policy set --manual`). Плоскі `homepage`/`searxng` стопати не треба —
+їх бере авто о 02:00.
 
 ```bash
-docker exec -d kopia bash -c \
-  'kopia --config-file=/app/config/repository.config snapshot create --progress \
-    /sources/qbittorrent /sources/navidrome /sources/pihole /sources/dnsmasq \
-    /sources/tailscale /sources/stirling /sources/uptime-kuma /sources/jellyfin \
-    /sources/homepage \
-    > /tmp/backup.log 2>&1'
-# прогрес:
-docker exec kopia tail -f /tmp/backup.log
+# вручну так само:
+/home/trip/db-backup.sh
+docker exec kopia kopia --config-file=/app/config/repository.config \
+  snapshot create /sources/homepage /sources/searxng
+# перевірка:
+docker exec kopia kopia --config-file=/app/config/repository.config \
+  snapshot list | grep -E 'sources/'
 ```
 
-Перший снапшот jellyfin (~620 МБ) іде довше за годину — Google троттлить
-великі заливи. Поки `snapshot list` не покаже всі джерела — не рестарти
-kopia і жодних Deploy в Dockhand.
+Контейнери БД: `selfbase-web`, `selfbase-garage`, `selfbase-spacetimedb`,
+`vaultwarden`, `selfwishes`, `psnself`.
 
 ### Граблі (якщо колись щось упаде)
 
