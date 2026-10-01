@@ -36,8 +36,10 @@ SELFlab/
 │   ├── immich/         # фото-бекап
 │   ├── network/        # pihole, knot-resolver, tailscale
 │   ├── translate/      # stirling-pdf
-│   └── admin/          # vaultwarden, uptime-kuma, kopia, caddy, glances, searxng, homepage
+│   └── admin/          # vaultwarden, uptime-kuma, kopia, caddy, glances, searxng
 │       └── homepage/   # конфіг дашборду (yaml + custom.css)
+├── scripts/
+│   └── db-backup.sh    # нічний стоп-кадр БД для Kopia (крон на сервері)
 └── .gitignore
 ```
 
@@ -109,7 +111,8 @@ SELFlab/
 ### Нічний бекап БД (стоп-кадр)
 
 Файловий бекап живої БД може бути рваним, тому БД бекапляться зупиненими
-скриптом `/home/trip/db-backup.sh` по крону о 01:55 (стоп 6 контейнерів →
+скриптом `/home/trip/db-backup.sh` (джерело в репо: `scripts/db-backup.sh`)
+по крону о 01:55 (стоп 6 контейнерів →
 `snapshot create` 7 шляхів → старт; авто о 02:00 для цих шляхів вимкнене
 через `policy set --manual`). Плоскі `homepage`/`searxng` стопати не треба —
 їх бере авто о 02:00.
