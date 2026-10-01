@@ -61,22 +61,21 @@ SELFlab/
 
 ## Бекап конфігів
 
-`docker/admin` бекапить конфіги всіх стеків (jellyfin, qbittorrent, navidrome,
-pihole, knot-resolver, tailscale, stirling, vaultwarden, uptime-kuma, homepage) у Google Drive
-через Kopia + rclone. Тільки налаштування — фото, музика і торенти не входять.
+`docker/admin` бекапить конфіги всіх стеків у Cloudflare R2 (S3, нативно)
+через Kopia. Тільки налаштування — фото, музика і торенти не входять.
+Старий gdrive-репозиторій через rclone лишений архівом
+(`repository.config.gdrive.bak` + rclone.conf на сервері).
 
 Разова підготовка на сервері:
 
-1. `rclone config --config /home/trip/kopia/rclone.conf` → remote `gdrive`
-   (OAuth через браузер, client_id лишити порожнім — внутрішній ключ rclone
-   для конфігів цілком тягне)
-2. Перевірка: `rclone lsd --config /home/trip/kopia/rclone.conf gdrive:`
-3. Створити репозиторій у CLI (UI-флоу не працює — див. «Граблі» нижче):
+1. Бакет `kopia` в R2 + Account API token (Object Read & Write на бакет)
+2. Створити репозиторій (ендпоінт голим хостом, без шляху і без слеша в кінці):
 
    ```bash
    docker exec kopia kopia --config-file=/app/config/repository.config \
-     repository create rclone --remote-path=gdrive:kopia \
-     --rclone-exe=/usr/bin/rclone --rclone-startup-timeout=180s
+     repository create s3 --bucket=kopia \
+     --endpoint=<ACCOUNT_ID>.r2.cloudflarestorage.com --region=auto \
+     --access-key=<AK> --secret-access-key=<SK>
    ```
 
 4. Глобальна політика (10 latest + 30 денних + 12 місячних, авто-бекап о 02:00):
@@ -114,11 +113,12 @@ kopia і жодних Deploy в Dockhand.
 
 ### Граблі (якщо колись щось упаде)
 
-- **UI-флоу не працює**: rclone-конфіг змонтований `:ro`, тож Kopia падає з
-  `unable to start rclone: timed out` (жорсткий дефолт 15 с; rclone v1.68.2
-  з read-only конфігом з'їдає це вікно ретраями). Тільки CLI і
-  `--rclone-startup-timeout=180s` — без нього сервер не відкриє репо
-  при кожному рестарті
+- **Було на rclone+gdrive (до 01.10.2026)**: rclone-конфіг монтувався `:ro`,
+  Kopia падала з `unable to start rclone: timed out`, лікувалось тільки CLI і
+  `--rclone-startup-timeout=180s`. Після переїзду на нативний S3 (R2) неактуально
+- **Endpoint R2**: голий хост `<ACCOUNT_ID>.r2.cloudflarestorage.com` — без
+  схеми з шляхом, без імені бакета і без слеша в кінці, інакше
+  `Endpoint url cannot have fully qualified paths`. Бакет тільки в `--bucket`
 - **Абсолютні шляхи в UI**: відносний шлях склеюється з домашнім каталогом
   і падає з "path does not exist"
 - **`Failed to save config after 10 tries`** в логах — безпечний шум від

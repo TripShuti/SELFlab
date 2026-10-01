@@ -181,8 +181,8 @@ services:
       - ${KOPIA_CONFIG:-/home/trip/kopia/config}:/app/config
       - ${KOPIA_CACHE:-/home/trip/kopia/cache}:/app/cache
       - ${KOPIA_LOGS:-/home/trip/kopia/logs}:/app/logs
-      # rclone-конфіг для бекапу в Google Drive (remote gdrive)
-      - ${KOPIA_RCLONE_CONFIG:-/home/trip/kopia/rclone.conf}:/app/rclone/rclone.conf:ro
+      # Сховище — Cloudflare R2 (S3, креденшали вшиті в repository.config).
+      # Старий gdrive-архів через rclone більше не підключений.
       # Джерела для бекапу (read-only) - тільки потрібні сервіси
       - ${VAULTWARDEN_DATA:-/home/trip/vaultwarden}:/sources/vaultwarden:ro
       - ${HOMEPAGE_CONFIG:-/home/trip/homepage}:/sources/homepage:ro
