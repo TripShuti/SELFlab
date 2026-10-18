@@ -184,16 +184,16 @@ services:
       # Сховище — Cloudflare R2 (S3, креденшали вшиті в repository.config).
       # Старий gdrive-архів через rclone більше не підключений.
       # Джерела для бекапу (read-only) - тільки потрібні сервіси
-      - ${VAULTWARDEN_DATA:-/home/trip/vaultwarden}:/sources/vaultwarden:ro
-      - ${HOMEPAGE_CONFIG:-/home/trip/homepage}:/sources/homepage:ro
-      - ${SEARXNG_CONFIG:-/home/trip/searxng}:/sources/searxng:ro
-      - ${PSNSELF_CONFIG:-/home/trip/.config/psnself}:/sources/psnself:ro
-      - ${SELFWISHES_DATA:-/opt/selfwishes/data}:/sources/selfwishes:ro
+      - ${VAULTWARDEN_DATA:-/home/trip/vaultwarden}:/sources/vaultwarden:rw
+      - ${HOMEPAGE_CONFIG:-/home/trip/homepage}:/sources/homepage:rw
+      - ${SEARXNG_CONFIG:-/home/trip/searxng}:/sources/searxng:rw
+      - ${PSNSELF_CONFIG:-/home/trip/.config/psnself}:/sources/psnself:rw
+      - ${SELFWISHES_DATA:-/opt/selfwishes/data}:/sources/selfwishes:rw
       # selfbase (named volumes з іншого стеку, тому external внизу)
-      - selfbase_garage-data:/sources/selfbase-garage-data:ro
-      - selfbase_garage-meta:/sources/selfbase-garage-meta:ro
-      - selfbase_spacetimedb-data:/sources/selfbase-spacetimedb-data:ro
-      - selfbase_spacetimedb-config:/sources/selfbase-spacetimedb-config:ro
+      - selfbase_garage-data:/sources/selfbase-garage-data:rw
+      - selfbase_garage-meta:/sources/selfbase-garage-meta:rw
+      - selfbase_spacetimedb-data:/sources/selfbase-spacetimedb-data:rw
+      - selfbase_spacetimedb-config:/sources/selfbase-spacetimedb-config:rw
     restart: unless-stopped
 
 volumes:
