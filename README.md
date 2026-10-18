@@ -15,7 +15,6 @@
 | Immich | бекап і галерея фото з телефону | 2283 |
 | Pi-hole + Knot Resolver | DNS-фільтрація реклами, свій рекурсивний резолвер | 80/443 |
 | Tailscale | VPN / exit node для доступу ззовні | — |
-| Stirling PDF | робота з PDF (мердж, OCR, конвертація) | 3010 |
 | Vaultwarden | менеджер паролів (Bitwarden-сумісний) | 8192 |
 | Uptime Kuma | моніторинг доступності сервісів | 3001 |
 | Homepage | дашборд усіх сервісів | 3002 |
@@ -35,7 +34,6 @@ SELFlab/
 │   ├── media/          # jellyfin, qbittorrent, navidrome
 │   ├── immich/         # фото-бекап
 │   ├── network/        # pihole, knot-resolver, tailscale
-│   ├── translate/      # stirling-pdf
 │   └── admin/          # vaultwarden, uptime-kuma, kopia, caddy, glances, searxng
 │       └── homepage/   # конфіг дашборду (yaml + custom.css)
 ├── scripts/
