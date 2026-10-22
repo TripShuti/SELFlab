@@ -16,31 +16,6 @@ services:
       # - ADMIN_TOKEN=${ADMIN_TOKEN}
     restart: unless-stopped
 
-  uptime-kuma:
-    image: louislam/uptime-kuma:1
-    container_name: ${UPTIME_KUMA_CONTAINER_NAME:-uptime-kuma}
-    ports:
-      - "${UPTIME_KUMA_PORT:-3001}:3001"
-    extra_hosts:
-      # Внутрішні домени резолвляться локально, щоб не спамити DNS (Pi-hole)
-      - "vault.home:${LAN_IP:-192.168.1.110}"
-      - "jellyfin.home:${LAN_IP:-192.168.1.110}"
-      - "qbittorrent.home:${LAN_IP:-192.168.1.110}"
-      - "navidrome.home:${LAN_IP:-192.168.1.110}"
-      - "immich.home:${LAN_IP:-192.168.1.110}"
-      - "stirling.home:${LAN_IP:-192.168.1.110}"
-      - "kuma.home:${LAN_IP:-192.168.1.110}"
-      - "kopia.home:${LAN_IP:-192.168.1.110}"
-      - "homepage.home:${LAN_IP:-192.168.1.110}"
-      - "searxng.home:${LAN_IP:-192.168.1.110}"
-    volumes:
-      - ${UPTIME_KUMA_DATA:-/home/trip/uptime-kuma}:/app/data
-      # Кореневий сертифікат Caddy — щоб монітори довіряли https://*.home:8443
-      - ${CADDY_DATA:-/home/trip/caddy/data}/caddy/pki/authorities/local/root.crt:/etc/caddy-ca/root.crt:ro
-    environment:
-      - NODE_EXTRA_CA_CERTS=/etc/caddy-ca/root.crt
-    restart: unless-stopped
-
   caddy:
     image: caddy:2
     container_name: ${CADDY_CONTAINER_NAME:-caddy}
