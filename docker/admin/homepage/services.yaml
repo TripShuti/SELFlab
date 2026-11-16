@@ -1,3 +1,41 @@
+- Admin:
+    - Dockhand:
+        href: https://dockhand.home:8443/stacks
+        description: Керування контейнерами
+        icon: dockhand
+    - Pi-hole:
+        href: https://pi-hole.home:8443/admin/
+        description: DNS-фільтр і реклама
+        icon: pi-hole
+        widget:
+          type: pihole
+          url: http://host.docker.internal:80
+          version: 6
+          key: "{{HOMEPAGE_VAR_PIHOLE_TOKEN}}"
+    - Tailscale:
+        href: https://login.tailscale.com/admin/machines
+        description: VPN-мережа
+        icon: tailscale
+        widget:
+          type: tailscale
+          url: https://api.tailscale.com
+          key: "{{HOMEPAGE_VAR_TAILSCALE_KEY}}"
+          tailnet: "{{HOMEPAGE_VAR_TAILSCALE_TAILNET}}"
+          deviceid: "{{HOMEPAGE_VAR_TAILSCALE_DEVICEID}}"
+    - Vaultwarden:
+        href: https://vault.home:8443
+        description: Менеджер паролів
+        icon: bitwarden
+    - Kopia:
+        href: https://kopia.home:8443
+        description: Бекапи в Google Drive
+        icon: kopia
+    - SearXNG:
+        href: https://searxng.home:8443
+        description: Приватний метапошук
+        icon: searxng
+
+
 - Media:
     - Jellyfin:
         href: https://jellyfin.home:8443
@@ -7,10 +45,23 @@
           type: jellyfin
           url: http://host.docker.internal:8096
           key: "{{HOMEPAGE_VAR_JELLYFIN_KEY}}"
+          version: 2 # optional, default is 1
+          enableBlocks: true # optional, defaults to false
+          enableNowPlaying: true # optional, defaults to true
+          enableUser: true # optional, defaults to false
+          enableMediaControl: true # optional, defaults to true
+          showEpisodeNumber: true # optional, defaults to false
+          expandOneStreamToTwoRows: true # optional, defaults to true
     - Navidrome:
         href: https://navidrome.home:8443
         description: Музика
         icon: navidrome
+        widget:
+          type: navidrome
+          url: http://192.168.1.110:4533/
+          user: trip
+          token: 181ce158cbe4493e019724151a492b55
+          salt: x8k19p
     - qBittorrent:
         href: https://qbittorrent.home:8443
         description: Торенти
@@ -30,49 +81,17 @@
           version: 2
           key: "{{HOMEPAGE_VAR_IMMICH_KEY}}"
 
-- Network:
-    - Pi-hole:
-        href: http://192.168.1.110/admin
-        description: DNS-фільтр і реклама
-        icon: pi-hole
-        widget:
-          type: pihole
-          url: http://host.docker.internal:80
-          version: 6
-          key: "{{HOMEPAGE_VAR_PIHOLE_TOKEN}}"
-    - Tailscale:
-        href: https://login.tailscale.com/admin/machines
-        description: VPN-мережа
-        icon: tailscale
-        widget:
-          type: tailscale
-          url: https://api.tailscale.com
-          key: "{{HOMEPAGE_VAR_TAILSCALE_KEY}}"
-          tailnet: "{{HOMEPAGE_VAR_TAILSCALE_TAILNET}}"
-          deviceid: "{{HOMEPAGE_VAR_TAILSCALE_DEVICEID}}"
 
-- Admin:
-    - Dockhand:
-        href: http://dockhand.home:3000/stacks
-        description: Керування контейнерами
-        icon: dockhand
-    - Vaultwarden:
-        href: https://vault.home:8443
-        description: Менеджер паролів
-        icon: bitwarden
-    - Uptime Kuma:
-        href: https://kuma.home:8443
-        description: Моніторинг
-        icon: uptime-kuma
-    - Kopia:
-        href: https://kopia.home:8443
-        description: Бекапи в Google Drive
-        icon: kopia
-    - Stirling PDF:
-        href: https://stirling.home:8443
-        description: Робота з PDF
-        icon: stirling-pdf
-    - SearXNG:
-        href: https://searxng.home:8443
-        description: Приватний метапошук
-        icon: searxng
+- Personal:
+    - psnSELF:
+        icon: playstation
+        description: ""
+        href: https://psn.home:8443/
+    - SELFwishes:
+        icon: https://www.svgrepo.com/show/504386/genshin-impact.svg
+        description: ""
+        href: https://self.wishes.home:8443/
+    - SELFbase:
+        href: https://selfbase.home:8443
+        icon: /icons/favicon.ico
+
