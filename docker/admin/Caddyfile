@@ -23,15 +23,6 @@ immich.home {
     reverse_proxy host.docker.internal:2283
 }
 
-stirling.home {
-    tls internal
-    reverse_proxy host.docker.internal:3010
-}
-
-kuma.home {
-    tls internal
-    reverse_proxy host.docker.internal:3001
-}
 
 kopia.home {
     tls internal
@@ -46,4 +37,44 @@ homepage.home {
 searxng.home {
     tls internal
     reverse_proxy host.docker.internal:8081
+}
+
+selfbase.home {
+    tls internal
+    handle_path /kotatsu-sync/* {
+        reverse_proxy host.docker.internal:8085
+    }
+    handle {
+        reverse_proxy host.docker.internal:3012
+    }
+}
+
+spacetime.home {
+    tls internal
+    reverse_proxy host.docker.internal:3011
+}
+
+s3.home {
+    tls internal
+    reverse_proxy host.docker.internal:9000
+}
+
+psn.home {
+    tls internal
+    reverse_proxy host.docker.internal:8420
+}
+
+self.wishes.home {
+    tls internal
+    reverse_proxy host.docker.internal:6767
+}
+
+dockhand.home {
+    tls internal
+    reverse_proxy host.docker.internal:3000
+}
+
+pi-hole.home {
+    tls internal
+    reverse_proxy host.docker.internal:80
 }
