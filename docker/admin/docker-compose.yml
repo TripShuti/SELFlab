@@ -73,8 +73,6 @@ services:
   glances:
     image: nicolargo/glances:latest
     container_name: ${GLANCES_CONTAINER_NAME:-glances}
-    environment:
-    
     volumes:
       # ОС хоста, а не контейнера; /sys — температура CPU (hwmon)
       - /etc/os-release:/etc/os-release:ro
